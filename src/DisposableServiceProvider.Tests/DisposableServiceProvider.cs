@@ -55,6 +55,7 @@ namespace DisposableServiceProvider.Tests
 
             // should now be safe to dispose
             this.innerServiceProvider.Dispose();
+            countdownEvent.Dispose();
         }
 
         public object GetService(Type serviceType)
