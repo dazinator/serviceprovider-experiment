@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Xunit;
 
-namespace DisposableServiceProvider.Tests
+namespace ScopeTrackingServiceProvider.Tests
 {
     public class ServiceProvider_Dispose
     {

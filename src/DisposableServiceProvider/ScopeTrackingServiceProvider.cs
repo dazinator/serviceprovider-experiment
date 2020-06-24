@@ -3,19 +3,19 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DisposableServiceProvider.Tests
+namespace ScopeTrackingServiceProvider
 {
     /// <summary>
     /// Wraps any inner IServiceProvider and if it is also IDisposable, will ensure Disposal is done in a way that waits for existing scopes to dispose.
     /// </summary>
-    public class SafeDisposalServiceProvider<TInnerProvider> : IServiceProvider, IAsyncDisposable, IServiceScopeFactory
+    public class ScopeTrackingServiceProvider<TInnerProvider> : IServiceProvider, IAsyncDisposable, IServiceScopeFactory
         where TInnerProvider : IServiceProvider, IDisposable
     {
         private readonly TInnerProvider innerServiceProvider;
         private CountdownEvent countdownEvent = new CountdownEvent(1);
         private bool _isBeingDisposed = false;
 
-        public SafeDisposalServiceProvider(TInnerProvider innerServiceProvider)
+        public ScopeTrackingServiceProvider(TInnerProvider innerServiceProvider)
         {
             this.innerServiceProvider = innerServiceProvider;
         }
@@ -61,7 +61,12 @@ namespace DisposableServiceProvider.Tests
             {
                 return this;
             }
-            return innerServiceProvider.GetService(serviceType);
+            if (serviceType == typeof(IServiceProvider))
+            {
+                return this;
+            }
+            var instance = innerServiceProvider.GetService(serviceType);
+            return instance;
         }
 
         internal class SafeDisposalScope : IServiceScope
@@ -84,7 +89,5 @@ namespace DisposableServiceProvider.Tests
                 onDispose();
             }
         }
-
-
     }
 }

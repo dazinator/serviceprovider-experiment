@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DisposableServiceProvider.Tests
+namespace ScopeTrackingServiceProvider.Tests
 {
     public class SafeServiceProvider_Dispose
     {
@@ -14,7 +14,7 @@ namespace DisposableServiceProvider.Tests
             var services = new ServiceCollection();
             services.AddSingleton<DisposableService>();
 
-            var rootServiceProvider = new SafeDisposalServiceProvider<ServiceProvider>(services.BuildServiceProvider());
+            var rootServiceProvider = new ScopeTrackingServiceProvider<ServiceProvider>(services.BuildServiceProvider());
 
             using var scope = rootServiceProvider.CreateScope();
             var singleton = scope.ServiceProvider.GetRequiredService<DisposableService>();
@@ -40,7 +40,7 @@ namespace DisposableServiceProvider.Tests
             var services = new ServiceCollection();
             services.AddSingleton<DisposableService>();
 
-            var rootServiceProvider = new SafeDisposalServiceProvider<ServiceProvider>(services.BuildServiceProvider());
+            var rootServiceProvider = new ScopeTrackingServiceProvider<ServiceProvider>(services.BuildServiceProvider());
 
             var rand = new Random();
             async Task Worker()
